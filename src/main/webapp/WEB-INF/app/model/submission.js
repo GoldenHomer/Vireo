@@ -74,59 +74,59 @@ var submissionModel = function ($q, ActionLog, FieldValue, FileService, WsApi) {
             });
         });
 
-        submission.before(function () {
-            instantiateActionLogs();
+        // submission.before(function () {
+        //     instantiateActionLogs();
 
-            angular.extend(apiMapping.Submission.actionLogListen, {
-                'method': submission.id + '/action-logs'
-            });
+        //     angular.extend(apiMapping.Submission.actionLogListen, {
+        //         'method': submission.id + '/action-logs'
+        //     });
 
-            submission.actionLogListenPromise = WsApi.listen(apiMapping.Submission.actionLogListen);
+        //     submission.actionLogListenPromise = WsApi.listen(apiMapping.Submission.actionLogListen);
 
-            submission.actionLogListenPromise.then(null, null, function (response) {
-                var newActionLog = angular.fromJson(response.body).payload.ActionLog;
-                submission.actionLogs.push(new ActionLog(newActionLog));
-            });
-        });
+        //     submission.actionLogListenPromise.then(null, null, function (response) {
+        //         var newActionLog = angular.fromJson(response.body).payload.ActionLog;
+        //         submission.actionLogs.push(new ActionLog(newActionLog));
+        //     });
+        // });
 
-        submission.before(function () {
-            angular.extend(apiMapping.Submission.fieldValuesListen, {
-                'method': submission.id + '/field-values'
-            });
-            WsApi.listen(apiMapping.Submission.fieldValuesListen).then(null, null, function (data) {
-                var replacedFieldValue = false;
-                var newFieldValue = angular.fromJson(data.body).payload.FieldValue;
-                var emptyFieldValues = [];
-                var fieldValue;
-                for (var i in submission.fieldValues) {
-                    fieldValue = submission.fieldValues[i];
-                    if (fieldValue.fieldPredicate.id === newFieldValue.fieldPredicate.id) {
-                        if (fieldValue.id) {
-                            if (fieldValue.id === newFieldValue.id) {
-                                angular.extend(fieldValue, newFieldValue);
-                                replacedFieldValue = true;
-                                break;
-                            }
-                        } else {
-                            emptyFieldValues.push(fieldValue);
-                        }
-                    }
-                }
-                if (emptyFieldValues.length === 1) {
-                    fieldValue = emptyFieldValues[0];
-                    angular.extend(fieldValue, newFieldValue);
-                    replacedFieldValue = true;
-                }
-                if (!replacedFieldValue) {
-                    fieldValue = new FieldValue(newFieldValue);
-                    submission.fieldValues.push(fieldValue);
-                }
+        // submission.before(function () {
+        //     angular.extend(apiMapping.Submission.fieldValuesListen, {
+        //         'method': submission.id + '/field-values'
+        //     });
+        //     WsApi.listen(apiMapping.Submission.fieldValuesListen).then(null, null, function (data) {
+        //         var replacedFieldValue = false;
+        //         var newFieldValue = angular.fromJson(data.body).payload.FieldValue;
+        //         var emptyFieldValues = [];
+        //         var fieldValue;
+        //         for (var i in submission.fieldValues) {
+        //             fieldValue = submission.fieldValues[i];
+        //             if (fieldValue.fieldPredicate.id === newFieldValue.fieldPredicate.id) {
+        //                 if (fieldValue.id) {
+        //                     if (fieldValue.id === newFieldValue.id) {
+        //                         angular.extend(fieldValue, newFieldValue);
+        //                         replacedFieldValue = true;
+        //                         break;
+        //                     }
+        //                 } else {
+        //                     emptyFieldValues.push(fieldValue);
+        //                 }
+        //             }
+        //         }
+        //         if (emptyFieldValues.length === 1) {
+        //             fieldValue = emptyFieldValues[0];
+        //             angular.extend(fieldValue, newFieldValue);
+        //             replacedFieldValue = true;
+        //         }
+        //         if (!replacedFieldValue) {
+        //             fieldValue = new FieldValue(newFieldValue);
+        //             submission.fieldValues.push(fieldValue);
+        //         }
 
-                if (fieldValue.fieldPredicate.documentTypePredicate) {
-                    enrichDocumentTypeFieldValue(fieldValue);
-                }
-            });
-        });
+        //         if (fieldValue.fieldPredicate.documentTypePredicate) {
+        //             enrichDocumentTypeFieldValue(fieldValue);
+        //         }
+        //     });
+        // });
 
         submission.before(function () {
             angular.extend(apiMapping.Submission.fieldValueRemovedListen, {

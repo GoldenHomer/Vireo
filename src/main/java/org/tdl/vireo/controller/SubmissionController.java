@@ -4,6 +4,8 @@ import static edu.tamu.weaver.response.ApiStatus.ERROR;
 import static edu.tamu.weaver.response.ApiStatus.INVALID;
 import static edu.tamu.weaver.response.ApiStatus.SUCCESS;
 
+import static edu.tamu.weaver.response.ApiAction.UPDATE;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -300,9 +302,11 @@ public class SubmissionController {
                     }
 
                 }
-                apiResponse = new ApiResponse(SUCCESS, fieldValue);
+                apiResponse = new ApiResponse(SUCCESS, UPDATE, fieldValue);
                 
-                simpMessagingTemplate.convertAndSend("/channel/submission/" + submission.getId() + "/field-values", apiResponse);
+                //simpMessagingTemplate.convertAndSend("/channel/submission/" + submission.getId() + "/field-values" + fieldValue.getId(), apiResponse);
+                
+                simpMessagingTemplate.convertAndSend("/channel/submission/" + submission.getId() + "/fieldValues/" + fieldValue.getId(), apiResponse);
 
 
             } else {

@@ -601,7 +601,7 @@ var apiMapping = {
     Submission: {
         lazy: true,
         validations: true,
-        channel: '/channel/submission',
+        channel: '/channel/submission/**/*',
         all: {
             'endpoint': '/private/queue',
             'controller': 'submission',
