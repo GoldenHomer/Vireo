@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,7 +53,6 @@ import org.tdl.vireo.model.SubmissionStatus;
 import org.tdl.vireo.model.User;
 import org.tdl.vireo.model.depositor.Depositor;
 import org.tdl.vireo.model.export.ExportPackage;
-import org.tdl.vireo.model.packager.AbstractPackager;
 import org.tdl.vireo.model.repo.ActionLogRepo;
 import org.tdl.vireo.model.repo.ConfigurationRepo;
 import org.tdl.vireo.model.repo.DepositLocationRepo;
@@ -72,6 +70,7 @@ import org.tdl.vireo.utility.FileIOUtility;
 import org.tdl.vireo.utility.OrcidUtility;
 import org.tdl.vireo.utility.PackagerUtility;
 import org.tdl.vireo.utility.TemplateUtility;
+import org.tdl.vireo.utility.export.TemplatePackagerUtility;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -141,6 +140,9 @@ public class SubmissionController {
 
     @Autowired
     private PackagerUtility packagerUtility;
+    
+    @Autowired
+    private TemplatePackagerUtility templatePackagerUtility;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -436,28 +438,14 @@ public class SubmissionController {
     @PreAuthorize("hasRole('REVIEWER')")
     @RequestMapping("/batch-export/{packagerName}")
     public void batchExport(HttpServletResponse response, @WeaverUser User user, @PathVariable String packagerName) throws Exception {
-
-        AbstractPackager packager = packagerUtility.getPackager(packagerName);
-
         response.setContentType("application/zip");
-        response.setHeader("Content-Disposition", "inline; filename=" + packagerName + ".zip");
-
-        try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
-
-            // TODO: need a more dynamic way to achieve this
-            if (packagerName.equals("ProQuest")) {
-                // TODO: add filter for UMI Publication true
-            }
-
-            for (Submission submission : submissionRepo.batchDynamicSubmissionQuery(user.getActiveFilter(), user.getSubmissionViewColumns())) {
-                ExportPackage exportPackage = packagerUtility.packageExport(packager, submission);
-                File exportFile = exportPackage.getFile();
-                zos.putNextEntry(new ZipEntry(exportFile.getName()));
-                zos.write(Files.readAllBytes(exportFile.toPath()));
-                zos.closeEntry();
-            }
-            zos.close();
-        }
+        File pkg = templatePackagerUtility.packageExports(user, packagerName);
+    
+        response.addHeader("Content-Disposition", "attachment");
+        Path path = Paths.get(pkg.getAbsolutePath());
+        Files.copy(path, response.getOutputStream());
+        response.getOutputStream().flush();
+        
     }
 
     @Transactional
