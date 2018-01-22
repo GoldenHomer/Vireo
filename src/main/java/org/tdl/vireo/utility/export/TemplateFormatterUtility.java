@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tdl.vireo.model.export.enums.GeneralKey;
+import org.tdl.vireo.model.export.enums.DSpaceMETSKey;
 import org.tdl.vireo.model.Submission;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -23,6 +24,9 @@ public class TemplateFormatterUtility {
 
 	private void populateContext(Context context, Submission submission) {
 		for (GeneralKey key : GeneralKey.values()) {
+			context.setVariable(key.name(), key.getValue(key, submission));
+		}
+		for (DSpaceMETSKey key : DSpaceMETSKey.values()) {
 			context.setVariable(key.name(), key.getValue(key, submission));
 		}
 	}

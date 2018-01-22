@@ -44,12 +44,6 @@ public abstract class AbstractFormatter extends BaseEntity implements Formatter 
             case FILE_HELPER:
                 context.setVariable(key.name(), fileHelperUtility);
                 break;
-            case SUBMISSION_HELPER:
-                context.setVariable(key.name(), submissionHelperUtility);
-                break;
-            case SUBMISSION:
-                context.setVariable(key.name(), submission);
-                break;
             case TIME:
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
                 context.setVariable(key.name(), format.format(new Date()));

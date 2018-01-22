@@ -1,5 +1,7 @@
 package org.tdl.vireo.model.export.enums;
 
+import org.tdl.vireo.model.Submission;
+
 public enum ProQuestUMIKey {
     AGENT,
     EMBARGO_CODE,
@@ -27,5 +29,14 @@ public enum ProQuestUMIKey {
     ABSTRACT_LINES,
     PRIMARY_DOCUMENT_MIMETYPE,
     PRIMARY_DOCUMENT_FIELD_VALUE,
-    SUPPLEMENTAL_DOCUMENT_FIELD_VALUES,
+    SUPPLEMENTAL_DOCUMENT_FIELD_VALUES;
+
+    public String getValue(ProQuestUMIKey key, Submission submission) {
+        switch (key) {
+
+            
+            default:
+                return "";
+        }
+    }
 }

@@ -4,6 +4,8 @@ import static javax.persistence.CascadeType.DETACH;
 import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.FetchType.EAGER;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +14,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.apache.tika.Tika;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.tdl.vireo.Application;
 
 import edu.tamu.weaver.validation.model.ValidatingBaseEntity;
 
@@ -140,6 +144,22 @@ public class FieldValue extends ValidatingBaseEntity {
         String fullFileName = value.substring(value.lastIndexOf("/") + 1, value.length());
         String fileName = fullFileName.substring(fullFileName.indexOf("-") + 1, fullFileName.length());
         return fileName;
+    }
+
+    @JsonIgnore
+    public String getMimeType() {
+        Tika tika = new Tika();
+        Path path = Paths.get(getPath(this.getValue()));
+        return tika.detect(path.toString());
+    }
+
+    @JsonIgnore
+    public static String getPath(String relativePath) {
+        String path = Application.BASE_PATH + relativePath;
+        if (path.contains(":") && path.charAt(0) == '/') {
+            path = path.substring(1, path.length());
+        }
+        return path;
     }
 
 }

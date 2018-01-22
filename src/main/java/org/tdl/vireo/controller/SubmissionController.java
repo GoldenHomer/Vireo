@@ -439,13 +439,11 @@ public class SubmissionController {
     @RequestMapping("/batch-export/{packagerName}")
     public void batchExport(HttpServletResponse response, @WeaverUser User user, @PathVariable String packagerName) throws Exception {
         response.setContentType("application/zip");
-        File pkg = templatePackagerUtility.packageExports(user, packagerName);
-    
         response.addHeader("Content-Disposition", "attachment");
+        File pkg = templatePackagerUtility.packageExports(user, packagerName);
         Path path = Paths.get(pkg.getAbsolutePath());
         Files.copy(path, response.getOutputStream());
         response.getOutputStream().flush();
-        
     }
 
     @Transactional

@@ -10,6 +10,7 @@ import org.tdl.vireo.model.FieldValue;
 import org.tdl.vireo.model.Submission;
 import org.tdl.vireo.service.DefaultSettingsService;
 
+
 import edu.tamu.weaver.context.SpringContext;
 
 public enum GeneralKey {
@@ -37,7 +38,7 @@ public enum GeneralKey {
     PROQUEST_FORMAT_RESTRICTION_CODE,
     PROQUEST_FORMAT_RESTRICTION_REMOVE;
 
-    public String getValue(GeneralKey key, Submission submission) {
+    public Object getValue(GeneralKey key, Submission submission) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
         switch (key) {
@@ -50,11 +51,11 @@ public enum GeneralKey {
             case FORMATTED_APPROVAL_DATE:
                 return submission.getApproveAdvisorDate() != null ? dateFormat.format(submission.getApproveAdvisorDate().getTime()) : "";
             case EMBARGO_APPROVAL_DATE:
-                return submission.getApproveEmbargoDate().toString();
+                return submission.getApproveEmbargoDate() != null ? submission.getApproveEmbargoDate().toString() : "";
             case FORMATTED_EMBARGO_APPROVAL_DATE:
                 return submission.getApproveEmbargoDate() != null ? dateFormat.format(submission.getApproveEmbargoDate().getTime()) : "";
             case SUBMISSION_DATE:
-                return submission.getSubmissionDate().toString();
+                return submission.getSubmissionDate() != null ? submission.getSubmissionDate().toString() : "";
             case FORMATTED_SUBMISSION_DATE:
                 return submission.getSubmissionDate() != null ? dateFormat.format(submission.getSubmissionDate().getTime()) : "";
             case COMMITTEE_APPROVAL_DATE:
@@ -62,7 +63,7 @@ public enum GeneralKey {
             case FORMATTED_COMMITTEE_APPROVAL_DATE:
                 return submission.getApproveApplicationDate() != null ? dateFormat.format(submission.getApproveApplicationDate().getTime()) : "";
             case LICENSE_AGREEMENT_DATE:
-                return submission.getSubmissionDate().toString();
+                return submission.getSubmissionDate() != null ? submission.getSubmissionDate().toString() : "";
             case FORMATTED_LICENSE_AGREEMENT_DATE:
                 return submission.getSubmissionDate() != null ? dateFormat.format(submission.getSubmissionDate().getTime()) : "";
             case APPLICATION_GRANTOR:
@@ -98,16 +99,6 @@ public enum GeneralKey {
     public DefaultConfiguration getSettingByNameAndType(String name, String type) {
         DefaultSettingsService defaultSettingsService = SpringContext.bean(DefaultSettingsService.class);
         return defaultSettingsService.getSettingByNameAndType(name, type);
-    }
-
-    public String getSubmitterFirstName(Submission submission) {
-        Optional<String> firstName = getFieldValueByPredicateValue(submission, "first_name");
-        return firstName.isPresent() ? firstName.get() : "";
-    }
-
-    public String getSubmitterMiddleName(Submission submission) {
-        Optional<String> middleName = getFieldValueByPredicateValue(submission, "middle_name");
-        return middleName.isPresent() ? middleName.get() : "";
     }
 
     public String getSubmitterLastName(Submission submission) {

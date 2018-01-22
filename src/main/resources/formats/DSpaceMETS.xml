@@ -91,7 +91,7 @@
                       mdschema="dc"
                       element="description"
                       qualifier="provenance"
-                      th:text="${ 'The student, ' + STUDENT_SHORT_NAME + ', submitted this ' + SUBMISSION_TYPE + ' for approval of ' + FORMATTED_SUBMISSION_DATE + '.' }">                         
+                      th:text="${ 'The student, ' + STUDENT_SHORT_NAME + ', submitted this ' + SUBMISSION_TYPE + ' for approval on ' + FORMATTED_SUBMISSION_DATE + '.' }">                         
                     </dim:field>
                     
                     <!-- dc.description.provenance = Committee Approval Date -->
@@ -130,7 +130,7 @@
                         mdschema="dc"
                         element="description"
                         qualifier="provenance"
-                        th:text="${ 'DSpace METS Submission Ingestion Package generated from Vireo submission ' + SUBMISSION_ID + ' on ' + time }">
+                        th:text="${ 'DSpace METS Submission Ingestion Package generated from Vireo submission ' + SUBMISSION_ID + ' on ' + TIME }">
                     </dim:field>
                     
                 </dim:dim>
@@ -144,7 +144,7 @@
             <file 
               th:if="${ PRIMARY_DOCUMENT_FIELD_VALUE != null }"
               SEQ="1"
-              th:attr="GROUPID=${ 'piper-mets-file-group-' + PRIMARY_DOCUMENT_FIELD_VALUE.fieldPredicate.id }, 
+              th:attr="GROUPID=${ 'piper-mets-file-group-' + PRIMARY_DOCUMENT_FIELD_VALUE.getFieldPredicate().getId() }, 
                        ID=${ 'piper-mets-file-' + PRIMARY_DOCUMENT_FIELD_VALUE.id },
                        MIMETYPE=${ PRIMARY_DOCUMENT_MIMETYPE }">
                 <FLocat
@@ -157,7 +157,7 @@
               th:each="fv,iter : ${ SUPPLEMENTAL_AND_SOURCE_DOCUMENT_FIELD_VALUES }"
               th:attr="GROUPID=${ 'piper-mets-file-group-' + fv.fieldPredicate.id }, 
                        ID=${ 'piper-mets-file-' + fv.id },
-                       MIMETYPE=${ FILE_HELPER.getMimeType(fv.value) },
+                       MIMETYPE=${ fv.getMimeType() },
                        SEQ=${ iter.index + 2 }">
                 <FLocat
                     LOCTYPE="URL"
@@ -172,7 +172,7 @@
               th:each="fv,iter : ${ LICENSE_DOCUMENT_FIELD_VALUES }"
               th:attr="GROUPID=${ 'piper-mets-file-group-' + fv.fieldPredicate.id }, 
                        ID=${ 'piper-mets-file-' + fv.id },
-                       MIMETYPE=${ FILE_HELPER.getMimeType(fv.value) },
+                       MIMETYPE=${ fv.getMimeType() },
                        SEQ=${ iter.index + 2 }">
                 <FLocat
                     LOCTYPE="URL"
