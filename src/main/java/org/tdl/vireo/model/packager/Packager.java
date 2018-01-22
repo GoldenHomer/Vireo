@@ -14,6 +14,12 @@ public interface Packager {
 
     public AbstractFormatter getFormatter();
 
-    public ExportPackage packageExport(String manifest, Submission submission);
+    public String getManifestPath();
+
+    public String getPrimaryDocumentPath();
+
+    public String getSupplementalDocumentPath();
+
+    public String getLicenseDocumentPath();
 
 }
